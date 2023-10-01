@@ -1,0 +1,5 @@
+9)On pc1 terminal:
+ssh -NL 8000:200.0.2.1:22 myuser1@100.0.1.5 
+
+in the second terminal of pc1:
+ssh myuser2@localhost -p8000

@@ -1,0 +1,44 @@
+/etc/init.d/networking restart
+/etc/init.d/ssh restart
+
+# Create user and home directory
+mkdir /home/myuser2
+useradd myuser2 -d /home/myuser2
+chown myuser2:myuser2 /home/myuser2
+
+# Create ssh folder and authorized_keys file
+mkdir /home/myuser2/.ssh
+touch /home/myuser2/.ssh/authorized_keys
+
+# Set correct permissions
+chown myuser2:myuser2 /home/myuser2/.ssh
+chmod 700 /home/myuser2/.ssh
+chown myuser2:myuser2 /home/myuser2/.ssh/authorized_keys
+chmod 600 /home/myuser2/.ssh/authorized_keys
+
+while ! [ -e /shared/id_rsa.pub ]; do
+	echo Waiting for public key...
+	sleep 1
+done
+
+cat /shared/id_rsa.pub > /home/myuser2/.ssh/authorized_keys
+
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A INPUT  -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT  -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p udp --dport 1194 -j ACCEPT
+
+iptables -A INPUT  -j DROP
+
+#Create tun and openvpn
+
+mkdir -p /dev/net
+mknod /dev/net/tun c 10 200
+chmod 600 /dev/net/tun
+
+chmod 600 /root/s2.key
+
+# Launch openvpn at startup
+openvpn /root/client.conf

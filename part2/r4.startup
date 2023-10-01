@@ -1,0 +1,8 @@
+/etc/init.d/networking restart
+/etc/init.d/quagga restart
+
+
+iptables -A FORWARD -s 100.0.0.0 -d 200.0.2.1 -p tcp -j DROP
+iptables -A FORWARD -s 100.0.0.0 -d 200.0.2.1 -p udp -j DROP
+iptables -A FORWARD -s 100.0.0.2 -d 200.0.2.1 -p tcp -j DROP
+iptables -A FORWARD -s 100.0.0.2 -d 200.0.2.1 -p udp -j DROP
